@@ -3,18 +3,18 @@ services:
     web:
       build: 
         context: frontend/
-        dockerfile: fronted.Dockerfile
+        dockerfile: frontend.Dockerfile
       ports:
         - 3000:80
     java:
       build: 
         context: backend/
         dockerfile: backend.Dockerfile
-    pmongo:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    mongo:
+      image: mongo
+      restart: always
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: root
+        MONGO_INITDB_ROOT_PASSWORD: example
 
 
