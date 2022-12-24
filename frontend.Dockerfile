@@ -5,7 +5,7 @@ COPY frontend/package*.json ./
 
 FROM base AS build-stage 
 RUN npm install
-COPY frontend/ .
+COPY frontend/ ./
 RUN npm run build
 
 

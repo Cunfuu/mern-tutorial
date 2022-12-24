@@ -5,7 +5,7 @@ WORKDIR /app
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-COPY package*.json .
+COPY package*.json ./
 
 # needs
 
@@ -20,7 +20,7 @@ RUN npm install
 # TEST
 
 FROM dependencies AS test
-COPY backend/ .
+COPY backend/ ./
 RUN  npm run test
 
 
@@ -28,8 +28,7 @@ RUN  npm run test
 FROM base AS release
 COPY --from=dependencies /app/prod_node_modules ./node_modules
 
-COPY .env .
-COPY backend/ .
+COPY backend/ ./
 
 CMD npm run start
 
