@@ -51,9 +51,9 @@ jobs:
         # be deployed to ECS.
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}:dev-$IMAGE_TAG -f ${{ matrix.app }}.Dockerfile .
         echo "hello darkness"
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}::dev-$IMAGE_TAG
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}:dev-$IMAGE_TAG
         echo "my old friend"
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}::dev-$IMAGE_TAG" >> $GITHUB_OUTPUT
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}:dev-$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
