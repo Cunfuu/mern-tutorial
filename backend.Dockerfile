@@ -17,12 +17,6 @@ RUN cp -R node_modules prod_node_modules
 # install ALL node_modules, including 'devDependencies'
 RUN npm install
 
-# TEST
-
-FROM dependencies AS test
-COPY backend/ ./
-RUN  npm run test
-
 
 # Release
 FROM base AS release
