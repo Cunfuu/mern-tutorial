@@ -24,7 +24,6 @@ jobs:
       ECS_CLUSTER: ${{ secrets.MY_ECS_CLUSTER }}                  # set this to your Amazon ECS cluster name
       ECS_TASK_DEFINITION: ${{ secrets.MY_ECS_TASK_DEFINITION }}  # set this to the path to your Amazon ECS task definition
                                                   # file, e.g. .aws/task-definition.json
-#hello darkness
 
     steps:
     - name: Checkout
@@ -51,7 +50,9 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}:dev-$IMAGE_TAG -f ${{ matrix.app }}.Dockerfile .
+        echo "hello darkness"
         docker push $ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}::dev-$IMAGE_TAG
+        echo "my old friend"
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY-${{ matrix.app }}::dev-$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
