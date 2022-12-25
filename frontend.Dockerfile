@@ -9,7 +9,7 @@ COPY frontend/ .
 RUN npm run build
 
 
-FROM base:stable-alpine as prod
+FROM base as prod
 COPY --from=dependencies /app/prod_node_modules ./node_modules
 COPY --from=build-stage  /app/build ./build
 COPY frontend/ .
