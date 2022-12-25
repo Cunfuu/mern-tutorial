@@ -9,8 +9,8 @@ COPY frontend/ .
 RUN npm run build
 
 
-FROM base as prod
-COPY --from=build-stage /app/prod_node_modules ./node_modules
+FROM base as release
+COPY --from=build-stage /app/node_modules ./node_modules
 COPY --from=build-stage  /app/build ./build
 COPY frontend/ .
 
