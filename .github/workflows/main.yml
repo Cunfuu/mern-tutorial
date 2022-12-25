@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS
+name: Deploy to Amazon ECS main
 
 on:
   push:
@@ -13,6 +13,9 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     environment: prod
+    strategy:
+      matrix:
+        app: [backend, frontend]
 
     env:
       AWS_REGION: ${{ secrets.MY_AWS_REGION }}                 # set this to your preferred AWS region, e.g. us-west-1
@@ -21,8 +24,6 @@ jobs:
       ECS_CLUSTER: ${{ secrets.MY_ECS_CLUSTER }}                  # set this to your Amazon ECS cluster name
       ECS_TASK_DEFINITION: ${{ secrets.MY_ECS_TASK_DEFINITION }}  # set this to the path to your Amazon ECS task definition
                                                   # file, e.g. .aws/task-definition.json
-      CONTAINER_NAME: ${{ secrets.MY_CONTAINER_NAME }}            # set this to the name of the container in the
-                                                  # containerDefinitions section of your task definition
 
     steps:
     - name: Checkout
@@ -38,26 +39,31 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+      with:
+        registry-type: public
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        REGISTRY_ALIAS: d1r3c6j4
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+        docker build -t $REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY-${{ matrix.app }}:-$IMAGE_TAG -f ${{ matrix.app }}.Dockerfile .
+        echo "hello darkness"
+        docker push $REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY-${{ matrix.app }}:-$IMAGE_TAG
+        echo "my old friend"
+        echo "image=$REGISTRY/$REGISTRY_ALIAS/$ECR_REPOSITORY-${{ matrix.app }}:-$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: ${{ env.ECS_TASK_DEFINITION }}
-        container-name: ${{ env.CONTAINER_NAME }}
+        container-name: ${{ matrix.app }}
         image: ${{ steps.build-image.outputs.image }}
         environment-variables: |
           NODE_ENV = production
@@ -72,3 +78,4 @@ jobs:
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
         wait-for-service-stability: true
+#hey
