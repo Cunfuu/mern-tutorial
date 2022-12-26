@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-MONGO_URI = "mongodb://cunfuu:Entm2YfxYHoVszoB@cluster0.4lsxd2e.mongodb.net/Cluster0?retryWrites=true&w=majority"
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI)
